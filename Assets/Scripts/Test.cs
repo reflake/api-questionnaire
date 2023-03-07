@@ -18,6 +18,8 @@ namespace Questionnaire
 			string responseData = await client.GetStringAsync(queryUrl);
 			var data = JsonConvert.DeserializeObject<ResponseData>(responseData);
 
+			data.Decode();
+			
 			questionNameLabel.text = data.results.First().question;
 		}
 	}
