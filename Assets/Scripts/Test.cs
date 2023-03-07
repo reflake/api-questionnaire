@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using Questionnaire.API;
@@ -16,18 +17,28 @@ namespace Questionnaire
 		[SerializeField] Transform answersContainer = default;
 		[SerializeField] TMP_Text questionNameLabel = default;
 		[SerializeField] TMP_Text scoreCounterLabel = default;
+		[SerializeField] CanvasGroup canvasGroup = default;
+		[SerializeField] LoadingPanel loadingPanel = default;
 
 		List<AnswerButton> _instantiatedButtons = new();
 		int _score = 0;
 		
 		async void Start()
 		{
+			loadingPanel.Show();
+			
 			var questions = await new Query().GetQuestions(this.GetCancellationTokenOnDestroy());
+			
+			loadingPanel.Hide();
+
+			canvasGroup.alpha = 0f;
 			
 			UpdateScoresLabel(questions.Length);
 
 			foreach (var questionData in questions)
 			{
+				canvasGroup.DOFade(1f, .5f);
+				
 				bool answeredCorrectly = await CreateQuestion(questionData);
 
 				if (answeredCorrectly)
@@ -38,6 +49,8 @@ namespace Questionnaire
 				}
 
 				await UniTask.Delay(2000);
+				await canvasGroup.DOFade(0f, .5f)
+									.AsyncWaitForCompletion();
 				
 				foreach (var button in _instantiatedButtons)
 				{
@@ -45,8 +58,6 @@ namespace Questionnaire
 				}
 
 				questionNameLabel.text = string.Empty;
-
-				await UniTask.Delay(500);
 			}
 		}
 
