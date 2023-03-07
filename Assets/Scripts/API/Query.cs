@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 namespace Questionnaire.API
 {
-	public class Query
+	public static class Query
 	{
 		[Serializable]
 		class QuestionDataRaw
@@ -37,7 +37,7 @@ namespace Questionnaire.API
 			public QuestionDataRaw[] results;
 		}
 		
-		public async Task<QuestionData[]> GetQuestions(CancellationToken cancellationToken)
+		public static async Task<QuestionData[]> GetQuestions(CancellationToken cancellationToken)
 		{
 			string queryUrl = "https://opentdb.com/api.php?amount=10&category=15&difficulty=easy&type=multiple";
 			HttpClient client = new HttpClient();
