@@ -1,24 +1,18 @@
-﻿using System;
-using System.Net;
+﻿using System.Collections.Generic;
 
-namespace Questionnaire
+namespace Questionnaire.API
 {
-	[Serializable]
 	public class QuestionData
 	{
-		public string question;
-		public string correct_answer;
-		public string[] incorrect_answers;
+		public readonly string Description;
+		public readonly string CorrectAnswer;
+		public IReadOnlyCollection<string> IncorrectAnswers;
 
-		public void Decode()
+		public QuestionData(string description, string correctAnswer, string[] incorrectAnswers)
 		{
-			question = WebUtility.HtmlDecode(question);
-			correct_answer = WebUtility.HtmlDecode(correct_answer);
-
-			for (int i = 0; i < incorrect_answers.Length; i++)
-			{
-				incorrect_answers[i] = WebUtility.HtmlDecode(incorrect_answers[i]);
-			}
+			Description = description;
+			CorrectAnswer = correctAnswer;
+			IncorrectAnswers = incorrectAnswers;
 		}
 	}
 }

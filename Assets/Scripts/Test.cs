@@ -3,6 +3,7 @@ using System.Net.Http;
 using Newtonsoft.Json;
 using TMPro;
 using UnityEngine;
+using Questionnaire.API;
 
 namespace Questionnaire
 {
@@ -12,15 +13,9 @@ namespace Questionnaire
 
 		async void Start()
 		{
-			string queryUrl = "https://opentdb.com/api.php?amount=10&category=15&difficulty=easy&type=multiple";
-			HttpClient client = new HttpClient();
-
-			string responseData = await client.GetStringAsync(queryUrl);
-			var data = JsonConvert.DeserializeObject<ResponseData>(responseData);
-
-			data.Decode();
+			var questions = await new Query().GetQuestions();
 			
-			questionNameLabel.text = data.results.First().question;
+			questionNameLabel.text = questions.First().Description;
 		}
 	}
 }
