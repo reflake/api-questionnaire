@@ -19,6 +19,7 @@ namespace Questionnaire
 		[SerializeField] TMP_Text scoreCounterLabel = default;
 		[SerializeField] CanvasGroup canvasGroup = default;
 		[SerializeField] LoadingPanel loadingPanel = default;
+		[SerializeField] Transform scoreTarget = default;
 
 		List<AnswerButton> _instantiatedButtons = new();
 		int _score = 0;
@@ -27,7 +28,7 @@ namespace Questionnaire
 		{
 			loadingPanel.Show();
 			
-			var questions = await Query.GetQuestionsMock(this.GetCancellationTokenOnDestroy());
+			var questions = await Query.GetQuestions(this.GetCancellationTokenOnDestroy());
 			
 			loadingPanel.Hide();
 
@@ -59,6 +60,16 @@ namespace Questionnaire
 
 				questionNameLabel.text = string.Empty;
 			}
+
+			var endingSequence = DOTween.Sequence();
+			
+			questionNameLabel.text = "Your result";
+
+			endingSequence
+				.Append(canvasGroup.DOFade(1f, 1.5f))
+				.Join(scoreCounterLabel.rectTransform.DOMove(scoreTarget.position, 1.5f))
+				.Join(scoreCounterLabel.rectTransform.DOScale(1.9f, 1.5f))
+				.Append(scoreCounterLabel.rectTransform.DOScale(2.5f, .66f).SetEase(Ease.OutFlash, 2, 0f));
 		}
 
 		void UpdateScoresLabel(int questionsAmount)

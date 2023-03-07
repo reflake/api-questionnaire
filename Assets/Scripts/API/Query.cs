@@ -39,8 +39,10 @@ namespace Questionnaire.API
 		
 		public static async Task<QuestionData[]> GetQuestions(CancellationToken cancellationToken)
 		{
-			string queryUrl = "https://opentdb.com/api.php?amount=10&category=15&difficulty=easy&type=multiple";
-			HttpClient client = new HttpClient();
+			var amount = 20;
+			var difficulty = "easy";
+			var queryUrl = $"https://opentdb.com/api.php?amount={amount}&difficulty={difficulty}&category=15&type=multiple";
+			var client = new HttpClient();
 
 			var httpResponse = await client.GetAsync(queryUrl, cancellationToken);
 			var responseDataJson = await httpResponse.Content.ReadAsStringAsync();
