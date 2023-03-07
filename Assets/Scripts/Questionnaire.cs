@@ -11,7 +11,7 @@ using Questionnaire.API;
 
 namespace Questionnaire
 {
-	public class Test : MonoBehaviour
+	public class Questionnaire : MonoBehaviour
 	{
 		[SerializeField] AnswerButton answerButtonPrefab = default;
 		[SerializeField] Transform answersContainer = default;
