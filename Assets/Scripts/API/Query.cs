@@ -60,5 +60,20 @@ namespace Questionnaire.API
 				.Select(x => new QuestionData(x.question, x.correct_answer, x.incorrect_answers))
 				.ToArray();
 		}
+
+		public static async Task<QuestionData[]> GetQuestionsMock(CancellationToken cancellationToken)
+		{
+			var mockQuestions = new[]
+			{
+				new QuestionData("2+2",
+					"4", new[] { "1", "10", "5" }),
+				new QuestionData("Орём или Орёл",
+					"Орёл", new[] { "Орём" }),
+				new QuestionData("Где находиться клуб любителей кожевного ремесла?",
+					"Двумя этажами ниже", new[] { "В данджене", "За следующей дверью", "В качалке" }),
+			};
+			
+			return await Task.FromResult(mockQuestions.Shuffle());
+		}
 	}
 }
