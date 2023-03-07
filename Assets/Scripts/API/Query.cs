@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
@@ -36,12 +37,13 @@ namespace Questionnaire.API
 			public QuestionDataRaw[] results;
 		}
 		
-		public async Task<QuestionData[]> GetQuestions()
+		public async Task<QuestionData[]> GetQuestions(CancellationToken cancellationToken)
 		{
 			string queryUrl = "https://opentdb.com/api.php?amount=10&category=15&difficulty=easy&type=multiple";
 			HttpClient client = new HttpClient();
 
-			string responseDataJson = await client.GetStringAsync(queryUrl);
+			var httpResponse = await client.GetAsync(queryUrl, cancellationToken);
+			var responseDataJson = await httpResponse.Content.ReadAsStringAsync();
 			var data = JsonConvert.DeserializeObject<ResponseData>(responseDataJson);
 
 			if (data.response_code != 0)
