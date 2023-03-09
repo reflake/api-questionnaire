@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
@@ -108,7 +109,15 @@ namespace Questionnaire
 
 		async Task<bool> CreateQuestion(QuestionData questionData)
 		{
-			questionNameLabel.text = questionData.Description;
+			// Parse description;
+			var description = questionData.Description;
+			var quotationMarksRegExp = new Regex(@""".*?""", RegexOptions.Multiline);
+			var sliceRegExp = new Regex(@"\w*-\w*", RegexOptions.Multiline);
+
+			description = quotationMarksRegExp.Replace(description, "<nobr>$0</nobr>");
+			description = sliceRegExp.Replace(description, "<nobr>$0</nobr>");
+
+			questionNameLabel.text = description;
 
 			List<string> answersShuffled = new();
 			answersShuffled.Add(questionData.CorrectAnswer);
