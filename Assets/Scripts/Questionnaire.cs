@@ -42,11 +42,13 @@ namespace Questionnaire
 			
 			_score.Setup(0, questions.Length);
 
+			int questionNumber = 1;
+
 			foreach (var questionData in questions)
 			{
 				canvasGroup.DOFade(1f, .5f);
 				
-				bool answeredCorrectly = await CreateQuestion(questionData);
+				bool answeredCorrectly = await CreateQuestion(questionNumber++, questionData);
 
 				if (answeredCorrectly)
 				{
@@ -97,7 +99,7 @@ namespace Questionnaire
 			};
 		}
 
-		async Task<bool> CreateQuestion(QuestionData questionData)
+		async Task<bool> CreateQuestion(int number, QuestionData questionData)
 		{
 			// Parse description;
 			var description = questionData.Description;
@@ -107,7 +109,7 @@ namespace Questionnaire
 			description = quotationMarksRegExp.Replace(description, "<nobr>$0</nobr>");
 			description = sliceRegExp.Replace(description, "<nobr>$0</nobr>");
 
-			questionNameLabel.text = description;
+			questionNameLabel.text = $"<size=80>Question №{number}</size>\n{description}";
 
 			// Shuffle answers
 			List<string> answersShuffled = new();
