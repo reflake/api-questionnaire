@@ -34,7 +34,7 @@ namespace Questionnaire
 			
 			loadingPanel.Show();
 			
-			var questions = await Query.GetQuestionsMock(_difficulty, this.GetCancellationTokenOnDestroy());
+			var questions = await Query.GetQuestions(_difficulty, this.GetCancellationTokenOnDestroy());
 			
 			loadingPanel.Hide();
 
