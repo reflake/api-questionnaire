@@ -23,12 +23,18 @@ namespace Questionnaire
 
 		List<AnswerButton> _instantiatedButtons = new();
 		int _score = 0;
+		Difficulty _difficulty = Difficulty.Easy;
 		
 		async void Start()
 		{
+			if (SceneContext.Initialized)
+			{
+				_difficulty = SceneContext.Instance.GameDifficulty;
+			}
+			
 			loadingPanel.Show();
 			
-			var questions = await Query.GetQuestions(this.GetCancellationTokenOnDestroy());
+			var questions = await Query.GetQuestions(_difficulty, this.GetCancellationTokenOnDestroy());
 			
 			loadingPanel.Hide();
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -36,12 +37,20 @@ namespace Questionnaire.API
 			public int response_code;
 			public QuestionDataRaw[] results;
 		}
+
+		public static string GetDifficultySerializedName(Difficulty difficulty)
+		{
+			var enumMemberInfo = typeof(Difficulty).GetMember(difficulty.ToString())[0];
+			var difficultyAttribute = enumMemberInfo.GetCustomAttribute(typeof(DifficultyAttribute), false) as DifficultyAttribute;
+
+			return difficultyAttribute.QueryParameterName;
+		}
 		
-		public static async Task<QuestionData[]> GetQuestions(CancellationToken cancellationToken)
+		public static async Task<QuestionData[]> GetQuestions(Difficulty difficulty, CancellationToken cancellationToken)
 		{
 			var amount = 20;
-			var difficulty = "easy";
-			var queryUrl = $"https://opentdb.com/api.php?amount={amount}&difficulty={difficulty}&category=15&type=multiple";
+			var difficultyName = GetDifficultySerializedName(difficulty);
+			var queryUrl = $"https://opentdb.com/api.php?amount={amount}&difficulty={difficultyName}&category=15&type=multiple";
 			var client = new HttpClient();
 
 			var httpResponse = await client.GetAsync(queryUrl, cancellationToken);
