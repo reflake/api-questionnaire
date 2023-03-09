@@ -34,7 +34,7 @@ namespace Questionnaire
 			
 			loadingPanel.Show();
 			
-			var questions = await Query.GetQuestions(_difficulty, this.GetCancellationTokenOnDestroy());
+			var questions = await Query.GetQuestionsMock(_difficulty, this.GetCancellationTokenOnDestroy());
 			
 			loadingPanel.Hide();
 
@@ -96,11 +96,11 @@ namespace Questionnaire
 				else
 				{
 					instanceOfAnswerButton = Instantiate(answerButtonPrefab, answersContainer);
+				
+					_instantiatedButtons.Add(instanceOfAnswerButton);
 				}
 				
 				instanceOfAnswerButton.Setup(answer, answer == correctAnswer);
-				
-				_instantiatedButtons.Add(instanceOfAnswerButton);
 
 				return instanceOfAnswerButton;
 			};

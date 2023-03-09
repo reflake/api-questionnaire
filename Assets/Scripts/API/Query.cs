@@ -72,7 +72,7 @@ namespace Questionnaire.API
 				.ToArray();
 		}
 
-		public static async Task<QuestionData[]> GetQuestionsMock(CancellationToken cancellationToken)
+		public static async Task<QuestionData[]> GetQuestionsMock(Difficulty _, CancellationToken __)
 		{
 			var mockQuestions = new[]
 			{
