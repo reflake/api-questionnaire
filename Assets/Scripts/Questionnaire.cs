@@ -119,16 +119,19 @@ namespace Questionnaire
 
 			questionNameLabel.text = description;
 
+			// Shuffle answers
 			List<string> answersShuffled = new();
 			answersShuffled.Add(questionData.CorrectAnswer);
 			answersShuffled.AddRange(questionData.IncorrectAnswers);
 			
 			answersShuffled.Shuffle();
 
+			// Instantiate answer buttons
 			var answerInstances = answersShuffled
 				.Select(InstantiateAnswerButton(questionData.CorrectAnswer))
 				.ToArray();
 
+			// Await for click
 			var cts = new CancellationTokenSource();
 			var getClickedTasks = answerInstances
 				.Select(answerButton => answerButton.AsyncGetClicked(cts.Token))
@@ -136,6 +139,7 @@ namespace Questionnaire
 
 			var answer = await Task.WhenAny(getClickedTasks);
 
+			// stop awaiting other buttons
 			cts.Cancel();
 
 			foreach (var answerButton in answerInstances)
