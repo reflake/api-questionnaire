@@ -372,6 +372,7 @@ GameObject:
   m_Component:
   - component: {fileID: 453690270}
   - component: {fileID: 453690271}
+  - component: {fileID: 453690272}
   m_Layer: 0
   m_Name: Questionnaire
   m_TagString: Untagged
@@ -409,9 +410,22 @@ MonoBehaviour:
   answerButtonPrefab: {fileID: 897397487164200835, guid: ea1219d19eb4c544083a7363234263a8, type: 3}
   answersContainer: {fileID: 411002329}
   questionNameLabel: {fileID: 1408016946}
-  scoreCounterLabel: {fileID: 717272923}
   canvasGroup: {fileID: 433082415}
   loadingPanel: {fileID: 73719847}
+  _score: {fileID: 453690272}
+--- !u!114 &453690272
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 453690269}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0952d268335f4e85b4aa586bb1450cd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scoreCounterLabel: {fileID: 717272923}
   scoreTarget: {fileID: 39453239}
 --- !u!1 &519420028
 GameObject:
@@ -852,12 +866,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 90
+  m_fontSize: 72
   m_fontSizeBase: 120
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 90
+  m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 4096

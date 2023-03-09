@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -17,13 +18,11 @@ namespace Questionnaire
 		[SerializeField] AnswerButton answerButtonPrefab = default;
 		[SerializeField] Transform answersContainer = default;
 		[SerializeField] TMP_Text questionNameLabel = default;
-		[SerializeField] TMP_Text scoreCounterLabel = default;
 		[SerializeField] CanvasGroup canvasGroup = default;
 		[SerializeField] LoadingPanel loadingPanel = default;
-		[SerializeField] Transform scoreTarget = default;
+		[SerializeField] Score _score = default;
 
 		List<AnswerButton> _instantiatedButtons = new();
-		int _score = 0;
 		Difficulty _difficulty = Difficulty.Easy;
 		
 		async void Start()
@@ -41,7 +40,7 @@ namespace Questionnaire
 
 			canvasGroup.alpha = 0f;
 			
-			UpdateScoresLabel(questions.Length);
+			_score.Setup(0, questions.Length);
 
 			foreach (var questionData in questions)
 			{
@@ -51,9 +50,7 @@ namespace Questionnaire
 
 				if (answeredCorrectly)
 				{
-					_score++;
-					
-					UpdateScoresLabel(questions.Length);
+					_score.Add(1);
 				}
 
 				await UniTask.Delay(2000);
@@ -68,20 +65,13 @@ namespace Questionnaire
 				questionNameLabel.text = string.Empty;
 			}
 
-			var endingSequence = DOTween.Sequence();
+			float duration = 1.5f;
 			
 			questionNameLabel.text = "Your result";
+			
+			_score.Center(duration);
 
-			endingSequence
-				.Append(canvasGroup.DOFade(1f, 1.5f))
-				.Join(scoreCounterLabel.rectTransform.DOMove(scoreTarget.position, 1.5f))
-				.Join(scoreCounterLabel.rectTransform.DOScale(1.9f, 1.5f))
-				.Append(scoreCounterLabel.rectTransform.DOScale(2.5f, .66f).SetEase(Ease.OutFlash, 2, 0f));
-		}
-
-		void UpdateScoresLabel(int questionsAmount)
-		{
-			scoreCounterLabel.text = $"{_score}/{questionsAmount}";
+			canvasGroup.DOFade(1f, duration);
 		}
 
 		Func<string, AnswerButton> InstantiateAnswerButton(string correctAnswer)
