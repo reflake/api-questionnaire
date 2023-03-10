@@ -38,7 +38,7 @@ namespace Questionnaire
 			
 			var questions = await Query.GetQuestions(_difficulty, this.GetCancellationTokenOnDestroy());
 			
-			loadingPanel.Hide();
+			await loadingPanel.AsyncHide();
 
 			canvasGroup.alpha = 0f;
 			

@@ -1,4 +1,6 @@
-﻿using DG.Tweening;
+﻿using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,8 +17,12 @@ namespace Questionnaire
 				.SetLoops(-1);
 		}
 
-		public void Hide()
+		public async Task AsyncHide()
 		{
+			background.DOFade(0f, .66f);
+
+			await UniTask.Delay(666, cancellationToken: this.GetCancellationTokenOnDestroy());
+			
 			Destroy(gameObject);
 		}
 	}
