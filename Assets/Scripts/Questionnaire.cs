@@ -10,6 +10,8 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using Questionnaire.API;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace Questionnaire
 {
@@ -21,12 +23,15 @@ namespace Questionnaire
 		[SerializeField] CanvasGroup canvasGroup = default;
 		[SerializeField] LoadingPanel loadingPanel = default;
 		[SerializeField] Score _score = default;
+		[SerializeField] Button _exitButton = default;
 
 		List<AnswerButton> _instantiatedButtons = new();
 		Difficulty _difficulty = Difficulty.Easy;
 		
 		async void Start()
 		{
+			_exitButton.onClick.AddListener(ExitToMenu);
+			
 			if (SceneContext.Initialized)
 			{
 				_difficulty = SceneContext.Instance.GameDifficulty;
@@ -74,6 +79,10 @@ namespace Questionnaire
 			_score.Center(duration);
 
 			canvasGroup.DOFade(1f, duration);
+
+			await UniTask.Delay(3000);
+			
+			ExitToMenu();
 		}
 
 		Func<string, AnswerButton> InstantiateAnswerButton(string correctAnswer)
@@ -140,6 +149,11 @@ namespace Questionnaire
 			}
 
 			return answer.Result;
+		}
+
+		void ExitToMenu()
+		{
+			SceneManager.LoadScene("MainMenu");
 		}
 	}
 }
