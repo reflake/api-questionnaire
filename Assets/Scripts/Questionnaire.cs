@@ -39,7 +39,7 @@ namespace Questionnaire
 			
 			loadingPanel.Show();
 			
-			var questions = await Query.GetQuestions(_difficulty, this.GetCancellationTokenOnDestroy());
+			var questions = await Query.GetQuestionsMock(_difficulty, this.GetCancellationTokenOnDestroy());
 			
 			loadingPanel.Hide();
 
@@ -74,7 +74,7 @@ namespace Questionnaire
 
 			float duration = 1.5f;
 			
-			questionNameLabel.text = "Your result";
+			questionNameLabel.text = "Your re<color=#e65a99>s</color>ult";
 			
 			_score.Center(duration);
 
@@ -118,7 +118,7 @@ namespace Questionnaire
 			description = quotationMarksRegExp.Replace(description, "<nobr>$0</nobr>");
 			description = sliceRegExp.Replace(description, "<nobr>$0</nobr>");
 
-			questionNameLabel.text = $"<size=80>Question №{number}</size>\n{description}";
+			questionNameLabel.text = $"<size=80><color=#db3030>Q</color>uest<color=#b778eb>i</color>on №{number}</size>\n{description}";
 
 			// Shuffle answers
 			List<string> answersShuffled = new();
