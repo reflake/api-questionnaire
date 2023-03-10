@@ -17,15 +17,12 @@ namespace Questionnaire
 		[SerializeField] Color correctAnswerColor;
 		[SerializeField] Color incorrectAnswerColor;
 
-		public bool Cached { get; private set; } = false;
-		
 		bool _isCorrect;
 
 		public void Setup(string answer, bool isCorrect)
 		{
 			label.text = answer;
 			_isCorrect = isCorrect;
-			Cached = false;
 			
 			gameObject.SetActive(true);
 			
@@ -59,8 +56,7 @@ namespace Questionnaire
 
 		public void Destroy()
 		{
-			gameObject.SetActive(false);
-			Cached = true;
+			Destroy(gameObject);
 		}
 	}
 }

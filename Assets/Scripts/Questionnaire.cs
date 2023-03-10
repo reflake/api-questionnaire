@@ -39,7 +39,7 @@ namespace Questionnaire
 			
 			loadingPanel.Show();
 			
-			var questions = await Query.GetQuestionsMock(_difficulty, this.GetCancellationTokenOnDestroy());
+			var questions = await Query.GetQuestions(_difficulty, this.GetCancellationTokenOnDestroy());
 			
 			loadingPanel.Hide();
 
@@ -60,14 +60,13 @@ namespace Questionnaire
 					_score.Add(1);
 				}
 
+				DisableAllButtons();
+
 				await UniTask.Delay(2000);
 				await canvasGroup.DOFade(0f, .5f)
 									.AsyncWaitForCompletion();
 				
-				foreach (var button in _instantiatedButtons)
-				{
-					button.Destroy();
-				}
+				DestoryButtons();
 
 				questionNameLabel.text = string.Empty;
 			}
@@ -89,19 +88,7 @@ namespace Questionnaire
 		{
 			return (answer) =>
 			{
-				AnswerButton instanceOfAnswerButton = null;
-
-				if (_instantiatedButtons.Any(button => button.Cached))
-				{
-					instanceOfAnswerButton = _instantiatedButtons.First(button => button.Cached);
-				}
-				else
-				{
-					instanceOfAnswerButton = Instantiate(answerButtonPrefab, answersContainer);
-				
-					_instantiatedButtons.Add(instanceOfAnswerButton);
-				}
-				
+				AnswerButton instanceOfAnswerButton = Instantiate(answerButtonPrefab, answersContainer);
 				instanceOfAnswerButton.Setup(answer, answer == correctAnswer);
 
 				return instanceOfAnswerButton;
@@ -128,13 +115,13 @@ namespace Questionnaire
 			answersShuffled.Shuffle();
 
 			// Instantiate answer buttons
-			var answerInstances = answersShuffled
+			_instantiatedButtons = answersShuffled
 				.Select(InstantiateAnswerButton(questionData.CorrectAnswer))
-				.ToArray();
+				.ToList();
 
 			// Await for click
 			var cts = new CancellationTokenSource();
-			var getClickedTasks = answerInstances
+			var getClickedTasks = _instantiatedButtons
 				.Select(answerButton => answerButton.AsyncGetClicked(cts.Token))
 				.ToArray();
 
@@ -143,12 +130,25 @@ namespace Questionnaire
 			// stop awaiting other buttons
 			cts.Cancel();
 
-			foreach (var answerButton in answerInstances)
+			return answer.Result;
+		}
+
+		void DisableAllButtons()
+		{
+			foreach (var answerButton in _instantiatedButtons)
 			{
 				answerButton.SetEnabled(false);
 			}
+		}
 
-			return answer.Result;
+		void DestoryButtons()
+		{
+			foreach (var button in _instantiatedButtons)
+			{
+				button.Destroy();
+			}
+
+			_instantiatedButtons.Clear();
 		}
 
 		void ExitToMenu()
