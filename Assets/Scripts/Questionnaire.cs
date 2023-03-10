@@ -45,7 +45,7 @@ namespace Questionnaire
 		{
 			loadingPanel.Show();
 
-			var questions = await Query.GetQuestions(_difficulty, this.GetCancellationTokenOnDestroy());
+			var questions = await Query.AsyncGetQuestions(_difficulty, this.GetCancellationTokenOnDestroy());
 
 			await loadingPanel.AsyncHide();
 
@@ -59,7 +59,7 @@ namespace Questionnaire
 			{
 				canvasGroup.DOFade(1f, .5f);
 
-				bool answeredCorrectly = await CreateQuestion(questionNumber++, questionData);
+				bool answeredCorrectly = await AsyncCreateQuestion(questionNumber++, questionData);
 
 				if (answeredCorrectly)
 				{
@@ -103,7 +103,7 @@ namespace Questionnaire
 			};
 		}
 
-		async Task<bool> CreateQuestion(int number, QuestionData questionData)
+		async Task<bool> AsyncCreateQuestion(int number, QuestionData questionData)
 		{
 			// Parse description;
 			var description = questionData.Description;

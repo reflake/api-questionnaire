@@ -46,7 +46,7 @@ namespace Questionnaire.API
 			return difficultyAttribute.QueryParameterName;
 		}
 		
-		public static async Task<QuestionData[]> GetQuestions(Difficulty difficulty, CancellationToken cancellationToken)
+		public static async Task<QuestionData[]> AsyncGetQuestions(Difficulty difficulty, CancellationToken cancellationToken)
 		{
 			var amount = 20;
 			var difficultyName = GetDifficultySerializedName(difficulty);
