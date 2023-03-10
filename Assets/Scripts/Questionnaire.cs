@@ -27,7 +27,7 @@ namespace Questionnaire
 		Difficulty _difficulty = Difficulty.Easy;
 		bool _exiting = false;
 		
-		async void Start()
+		void Start()
 		{
 			_transition.AnimateEnter(.5f);
 			
@@ -38,14 +38,19 @@ namespace Questionnaire
 				_difficulty = SceneContext.Instance.GameDifficulty;
 			}
 			
+			StartQuestions();
+		}
+
+		async Task StartQuestions()
+		{
 			loadingPanel.Show();
-			
+
 			var questions = await Query.GetQuestions(_difficulty, this.GetCancellationTokenOnDestroy());
-			
+
 			await loadingPanel.AsyncHide();
 
 			canvasGroup.alpha = 0f;
-			
+
 			_score.Setup(0, questions.Length);
 
 			int questionNumber = 1;
@@ -53,7 +58,7 @@ namespace Questionnaire
 			foreach (var questionData in questions)
 			{
 				canvasGroup.DOFade(1f, .5f);
-				
+
 				bool answeredCorrectly = await CreateQuestion(questionNumber++, questionData);
 
 				if (answeredCorrectly)
@@ -66,7 +71,7 @@ namespace Questionnaire
 				await UniTask.Delay(2000, cancellationToken: this.GetCancellationTokenOnDestroy());
 
 				canvasGroup.DOFade(0f, .5f);
-				
+
 				await UniTask.Delay(500, cancellationToken: this.GetCancellationTokenOnDestroy());
 
 				DestroyButtons();
@@ -75,15 +80,15 @@ namespace Questionnaire
 			}
 
 			float duration = 1.5f;
-			
+
 			questionNameLabel.text = "Your re<color=#e65a99>s</color>ult";
-			
+
 			_score.Center(duration);
 
 			canvasGroup.DOFade(1f, duration);
 
 			await UniTask.Delay(3000);
-			
+
 			ExitToMenu();
 		}
 
@@ -122,11 +127,6 @@ namespace Questionnaire
 
 			var answerTask = await Task.WhenAny(getClickedTasks);
 
-			if (answerTask.IsCanceled)
-			{
-				throw new TaskCanceledException();
-			}
-			
 			return answerTask.Result;
 		}
 
