@@ -6,13 +6,19 @@ namespace Questionnaire.API
 	{
 		public readonly string Description;
 		public readonly string CorrectAnswer;
-		public IReadOnlyCollection<string> IncorrectAnswers;
+		public IReadOnlyCollection<string> Answers;
 
 		public QuestionData(string description, string correctAnswer, string[] incorrectAnswers)
 		{
 			Description = description;
 			CorrectAnswer = correctAnswer;
-			IncorrectAnswers = incorrectAnswers;
+
+			var answers = new List<string>();
+
+			answers.Add(correctAnswer);
+			answers.AddRange(incorrectAnswers);
+
+			Answers = answers;
 		}
 	}
 }

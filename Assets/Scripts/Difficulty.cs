@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Questionnaire
+﻿namespace Questionnaire
 {
 	public enum Difficulty
 	{

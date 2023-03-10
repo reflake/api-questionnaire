@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
@@ -62,11 +59,13 @@ namespace Questionnaire
 
 				DisableAllButtons();
 
-				await UniTask.Delay(2000);
-				await canvasGroup.DOFade(0f, .5f)
-									.AsyncWaitForCompletion();
+				await UniTask.Delay(2000, cancellationToken: this.GetCancellationTokenOnDestroy());
+
+				canvasGroup.DOFade(0f, .5f);
 				
-				DestoryButtons();
+				await UniTask.Delay(500, cancellationToken: this.GetCancellationTokenOnDestroy());
+
+				DestroyButtons();
 
 				questionNameLabel.text = string.Empty;
 			}
@@ -99,18 +98,11 @@ namespace Questionnaire
 		{
 			// Parse description;
 			var description = questionData.Description;
-			var quotationMarksRegExp = new Regex(@""".*?""", RegexOptions.Multiline);
-			var sliceRegExp = new Regex(@"\w*-\w*", RegexOptions.Multiline);
-
-			description = quotationMarksRegExp.Replace(description, "<nobr>$0</nobr>");
-			description = sliceRegExp.Replace(description, "<nobr>$0</nobr>");
 
 			questionNameLabel.text = $"<size=80><color=#db3030>Q</color>uest<color=#b778eb>i</color>on №{number}</size>\n{description}";
 
 			// Shuffle answers
-			List<string> answersShuffled = new();
-			answersShuffled.Add(questionData.CorrectAnswer);
-			answersShuffled.AddRange(questionData.IncorrectAnswers);
+			List<string> answersShuffled = new(questionData.Answers);
 			
 			answersShuffled.Shuffle();
 
@@ -120,17 +112,18 @@ namespace Questionnaire
 				.ToList();
 
 			// Await for click
-			var cts = new CancellationTokenSource();
 			var getClickedTasks = _instantiatedButtons
-				.Select(answerButton => answerButton.AsyncGetClicked(cts.Token))
+				.Select(answerButton => answerButton.AsyncGetClicked())
 				.ToArray();
 
-			var answer = await Task.WhenAny(getClickedTasks);
+			var answerTask = await Task.WhenAny(getClickedTasks);
 
-			// stop awaiting other buttons
-			cts.Cancel();
-
-			return answer.Result;
+			if (answerTask.IsCanceled)
+			{
+				throw new TaskCanceledException();
+			}
+			
+			return answerTask.Result;
 		}
 
 		void DisableAllButtons()
@@ -141,7 +134,7 @@ namespace Questionnaire
 			}
 		}
 
-		void DestoryButtons()
+		void DestroyButtons()
 		{
 			foreach (var button in _instantiatedButtons)
 			{

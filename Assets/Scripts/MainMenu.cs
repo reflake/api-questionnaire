@@ -1,7 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -21,11 +17,10 @@ namespace Questionnaire
 			hardButton.onClick.AddListener(() => StartGame(Difficulty.Hard));
 		}
 
-		async void StartGame(Difficulty difficulty)
+		void StartGame(Difficulty difficulty)
 		{
 			SceneContext.Instance.GameDifficulty = difficulty;
-			
-			await SceneManager.LoadSceneAsync("Questionnaire").ToUniTask();
+			SceneManager.LoadScene("Questionnaire");
 		}
 	}
 }

@@ -35,13 +35,12 @@ namespace Questionnaire
 			button.enabled = value;
 		}
 
-		public async Task<bool> AsyncGetClicked(CancellationToken cancellationToken)
+		public async Task<bool> AsyncGetClicked()
 		{
 			// Should stop awaiting Click() when button destroyed
 			var destroyToken = this.GetCancellationTokenOnDestroy();
-			var compositeTokenSource = CancellationTokenSource.CreateLinkedTokenSource(destroyToken, cancellationToken);
 			
-			await button.OnClickAsync(compositeTokenSource.Token);
+			await button.OnClickAsync(destroyToken);
 			
 			SetColor(_isCorrect ? correctAnswerColor : incorrectAnswerColor);
 
