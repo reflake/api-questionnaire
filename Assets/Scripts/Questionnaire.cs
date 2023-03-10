@@ -21,13 +21,17 @@ namespace Questionnaire
 		[SerializeField] LoadingPanel loadingPanel = default;
 		[SerializeField] Score _score = default;
 		[SerializeField] Button _exitButton = default;
+		[SerializeField] Transition _transition = default;
 
 		List<AnswerButton> _instantiatedButtons = new();
 		Difficulty _difficulty = Difficulty.Easy;
+		bool _exiting = false;
 		
 		async void Start()
 		{
-			_exitButton.onClick.AddListener(ExitToMenu);
+			_transition.AnimateEnter(.5f);
+			
+			_exitButton.onClick.AddListener(() => ExitToMenu());
 			
 			if (SceneContext.Initialized)
 			{
@@ -144,8 +148,17 @@ namespace Questionnaire
 			_instantiatedButtons.Clear();
 		}
 
-		void ExitToMenu()
+		async Task ExitToMenu()
 		{
+			if (_exiting)
+				return;
+			
+			_exiting = true;
+			
+			_transition.AnimateExit(.5f);
+
+			await UniTask.Delay(500);
+
 			SceneManager.LoadScene("MainMenu");
 		}
 	}
